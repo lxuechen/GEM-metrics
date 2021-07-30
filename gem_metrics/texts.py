@@ -22,7 +22,7 @@ class Texts:
             self.filename = data
             with open(data, "r", encoding="UTF-8") as fh:
                 data = json.load(fh)
-                self.all_data = data
+                self.all_data = data["values"]
         else:
             self.filename = data.get("filename")
             self.all_data = data["values"]

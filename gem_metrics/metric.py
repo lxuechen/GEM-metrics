@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from copy import copy
-import numpy as np
 from typing import List
+
 from logzero import logger
+import numpy as np
 
 
 class AbstractMetric:
@@ -58,7 +59,7 @@ class AbstractMetric:
             for pred_id in predictions.ids:
                 cache_key = (self.__class__.__name__, predictions.filename, pred_id)
                 current_score = cache.get(cache_key, None)
-                    
+
                 if current_score is not None:
                     cached_scores[pred_id] = current_score
                 else:
@@ -86,7 +87,11 @@ class AbstractMetric:
 
         if self.support_caching():
             # Combine them back and reshuffle.
-            scores = cached_scores | computed_scores
+            import copy as _copy
+            scores = _copy.deepcopy(cached_scores)
+            scores.update(computed_scores)
+            # lxuechen: Shit code does not support backwards compat to <py3.9.
+            # scores = cached_scores | computed_scores
             scores_ordered = [scores[pred_id] for pred_id in original_order]
             # Aggregate individual scores.
             aggregated_score = self._aggregate_scores(scores_ordered)

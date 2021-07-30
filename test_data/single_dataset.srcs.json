@@ -2,10 +2,12 @@
     "language": "en",
     "values": [
         {
-            "source": "Alimentum is an adult establish found in the city centre area near Burger King."
+            "source": "Alimentum is an adult establish found in the city centre area near Burger King.",
+            "gem_id": 1
         },
         {
-            "source": "Alimentum in city centre is not a family-friendly place."
+            "source": "Alimentum in city centre is not a family-friendly place.",
+            "gem_id": 2
         }
     ]
 }

@@ -3,35 +3,34 @@
 from argparse import ArgumentParser
 from copy import copy
 from dataclasses import dataclass
-from gem_metrics.config import (get_all_datasets, get_language_for_dataset, 
+import json
+from multiprocessing import Manager
+from multiprocessing.pool import ThreadPool as Pool
+import sys
+import traceback
+from typing import Optional, Dict, List
+
+from diskcache import Cache
+from logzero import logger
+
+from gem_metrics.config import (get_all_datasets, get_language_for_dataset,
                                 get_url_for_dataset, get_all_transformation_sets,
                                 get_parent_dataset_for_transformation,
                                 get_all_subpopulation_sets,
                                 get_url_for_subpopulation)
-from diskcache import Cache
-import json
-from multiprocessing import Process, Manager
-from multiprocessing.pool import ThreadPool as Pool
-
-from typing import Optional, Dict, List
-import sys
-import traceback
-from logzero import logger
-
-# Data holder classes
-from .texts import Predictions, References, Sources, Submission
-
 # auto-download
 from .data import ensure_download
-
 # metric types (metrics are imported dynamically)
 from .metric import ReferencedMetric, ReferencelessMetric, SourceAndReferencedMetric
+# Data holder classes
+from .texts import Predictions, References, Sources, Submission
 
 
 def metric_list_to_metric_dict(metric_list: List[str]) -> Dict[str, List]:
     """
     Function that converts a list of strings corresponding to the metric names into a dictionary with three keys,
-    referenced_metrics, referenceless_metrics, and sourced_and_referenced_metrics, which are populated by the actual metrics class.
+    referenced_metrics, referenceless_metrics, and sourced_and_referenced_metrics, which are populated by the actual
+    metrics class.
     """
     # convert to set in case there are repeats
     metric_list = list(set(metric_list))
@@ -71,7 +70,8 @@ def metric_list_to_metric_dict(metric_list: List[str]) -> Dict[str, List]:
             sourced_and_referenced_list.append(metric_class)
         else:
             raise NotImplementedError(
-                f"{str(metric_class)} is not one of [referenced, referenceless, sourced_and_referenced]. Please check the metric_name_to_metric_type dict."
+                f"{str(metric_class)} is not one of [referenced, referenceless, sourced_and_referenced]. Please check "
+                f"the metric_name_to_metric_type dict."
             )
 
     metric_dict = {
@@ -155,7 +155,9 @@ def compute(
             del metric
 
     # compute ref-src-based metrics
-    if refs is not None and srcs is not None:
+    # if refs is not None and srcs is not None:
+    # lxuechen: Fix shit code!!!
+    if refs is not None and srcs is not None and len(srcs) > 0:
         if len(srcs) != len(outs):
             raise ValueError(
                 f'Incorrect length for data "{outs.filename}" -- outputs: {len(outs)} vs. sources: {len(srcs)}'
@@ -238,6 +240,7 @@ def process_submission(
         )
 
     return dict(shared_dict)
+
 
 def load_references(dataset_name: str) -> Optional[References]:
     """Load a file with references for a standard GEM dataset (attempt download), return None if not present."""
@@ -521,7 +524,7 @@ def main():
         ),
     )
     ap.add_argument(
-        "--num_threads", type=int, 
+        "--num_threads", type=int,
         help="Number of threads that will be started in parallel.", default=12
     )
     args = ap.parse_args()

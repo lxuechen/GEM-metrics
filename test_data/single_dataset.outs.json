@@ -3,10 +3,12 @@
     "task": "summarization",
     "values": [
         {
-            "generated": "Alimentum is a non family-friendly restaurant near Burger King in the city centre."
+            "generated": "Alimentum is a non family-friendly restaurant near Burger King in the city centre.",
+            "gem_id": 1
         },
         {
-            "generated": "Alimentum is located in the city centre. It is not family-friendly."
+            "generated": "Alimentum is located in the city centre. It is not family-friendly.",
+            "gem_id": 2
         }
     ]
 }
