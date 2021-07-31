@@ -50,7 +50,8 @@ compute them.
 To run the example:
 
 ```bash
-./run_metrics.py -r ./test_data/single_dataset.refs.json ./test_data/single_dataset.outs.json
+./run_metrics.py -r ./test_data/single_dataset.refs.json ./test_data/single_dataset.outs.json \
+  --metric-list bleu meteor rouge nist bertscore bleurt
 ```
 
 License

@@ -495,6 +495,7 @@ def main():
         nargs="+",
         default=[
             "bleu",
+            "meteor",
             "rouge",
             "nist",
             "msttr",
