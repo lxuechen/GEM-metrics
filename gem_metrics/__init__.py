@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import json
 from multiprocessing import Manager
 from multiprocessing.pool import ThreadPool as Pool
+import os
 import sys
 import traceback
 from typing import Optional, Dict, List
@@ -25,6 +26,8 @@ from .metric import ReferencedMetric, ReferencelessMetric, SourceAndReferencedMe
 # Data holder classes
 from .texts import Predictions, References, Sources, Submission
 
+os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+
 
 def metric_list_to_metric_dict(metric_list: List[str]) -> Dict[str, List]:
     """
@@ -33,7 +36,9 @@ def metric_list_to_metric_dict(metric_list: List[str]) -> Dict[str, List]:
     metrics class.
     """
     # convert to set in case there are repeats
-    metric_list = list(set(metric_list))
+    # lxuechen: also need to preserve order! evaluate BLEURT last, since it invokes annoying tensorflow and eats all
+    # GPU memory by default!!!
+    metric_list = list(dict.fromkeys(metric_list))
 
     metric_name_to_metric_class = {
         "bertscore": "BERTScore",
