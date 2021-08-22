@@ -14,7 +14,7 @@ class BERTScore(ReferencedMetric):
         pass
 
     def _initialize(self):
-        self.metric = load_metric("bertscore", batch_size=64)
+        self.metric = load_metric("bertscore", batch_size=16)
 
     def _make_serializable(self, score_entry):
         """Convert from tensor object to list of floats."""
